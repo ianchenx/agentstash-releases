@@ -80,6 +80,13 @@ jobs:
       - name: Install frontend dependencies
         run: bun install
 
+      - name: Build CLI sidecar for target
+        run: |
+          cargo build --release --no-default-features --features cli --bin agentstash-cli --target ${{ matrix.target }}
+          mkdir -p target/cli
+          cp "target/${{ matrix.target }}/release/agentstash-cli" "target/cli/agentstash-cli-${{ matrix.target }}"
+        working-directory: src-tauri
+
       - name: Build and Release
         uses: tauri-apps/tauri-action@v0
         env:
